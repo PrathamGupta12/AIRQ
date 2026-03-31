@@ -1,4 +1,3 @@
-"use client";
 
 import { useEffect, useRef } from "react";
 import { AlertCircle, Lightbulb, Github, Linkedin, Code2, Cpu, FileCode, Database, Layers } from "lucide-react";
@@ -253,7 +252,7 @@ export default function AboutSection() {
           </div>
 
           <p className="about-techstack-footer">
-            Built with React · Tailwind CSS · Recharts · Next.js · Python · Scikit-Learn
+            Built with React · Vite · Recharts · CSS · Python · Scikit-Learn
           </p>
         </div>
       </section>

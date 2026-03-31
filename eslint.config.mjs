@@ -1,33 +1,27 @@
-import { FlatCompat } from '@eslint/eslintrc'
- 
-const compat = new FlatCompat({
-  // import.meta.dirname is available after Node.js v20.11.0
-  baseDirectory: import.meta.dirname,
-})
- 
-const eslintConfig = [
-  ...compat.config({
-    extends: ['next'],
-    plugins: ['import'],
-  }),
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import tseslint from 'typescript-eslint'
+
+export default tseslint.config(
+  { ignores: ['dist'] },
   {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
     rules: {
-      'react/no-unescaped-entities': 'off',
-      '@next/next/no-img-element': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'off',
-      'react-hooks/exhaustive-deps': 'off',
-      'import/no-unresolved': 'error',
-      'import/named': 'error',
-      'import/default': 'error',
-      'import/namespace': 'error',
-      'import/no-absolute-path': 'error',
-      'import/no-dynamic-require': 'error',
-      'import/no-self-import': 'error',
-      'import/no-cycle': 'error',
-      'import/no-useless-path-segments': 'error',
     },
   },
-]
- 
-export default eslintConfig
+)

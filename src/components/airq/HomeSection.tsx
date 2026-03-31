@@ -1,4 +1,3 @@
-"use client";
 
 import { useEffect, useRef, useMemo } from "react";
 import { ArrowRight, Zap, TrendingUp, BarChart2, Activity, AlertTriangle, CheckCircle, Database } from "lucide-react";

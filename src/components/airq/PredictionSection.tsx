@@ -1,4 +1,3 @@
-"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Cpu, Wind, Activity } from "lucide-react";

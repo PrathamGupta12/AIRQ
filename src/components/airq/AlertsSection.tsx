@@ -1,4 +1,3 @@
-"use client";
 
 import { useEffect, useRef } from "react";
 import { AlertTriangle, CheckCircle, Info, TrendingUp, TrendingDown, Wind } from "lucide-react";

@@ -2,7 +2,6 @@ import { Outlet } from "react-router-dom";
 import CursorTrail from "@/components/airq/CursorTrail";
 import Navbar from "@/components/airq/Navbar";
 import Footer from "@/components/airq/Footer";
-import { VisualEditsMessenger } from "orchids-visual-edits";
 
 export default function Layout() {
     return (
@@ -13,7 +12,6 @@ export default function Layout() {
                 <Outlet />
             </main>
             <Footer />
-            <VisualEditsMessenger />
         </div>
     );
 }
