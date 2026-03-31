@@ -4,12 +4,12 @@ import { useEffect, useRef } from "react";
 import { AlertCircle, Lightbulb, Github, Linkedin, Code2, Cpu, FileCode, Database, Layers } from "lucide-react";
 
 const techStack = [
-  { icon: Code2, name: "React", desc: "Frontend UI framework", color: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20" },
-  { icon: Layers, name: "Tailwind CSS", desc: "Utility-first styling", color: "text-sky-400", bg: "bg-sky-500/10", border: "border-sky-500/20" },
-  { icon: FileCode, name: "Python", desc: "Backend & model training", color: "text-yellow-400", bg: "bg-yellow-500/10", border: "border-yellow-500/20" },
-  { icon: Database, name: "Pandas", desc: "Data manipulation & EDA", color: "text-green-400", bg: "bg-green-500/10", border: "border-green-500/20" },
-  { icon: Cpu, name: "Scikit-Learn", desc: "ML model training", color: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" },
-  { icon: Database, name: "NumPy", desc: "Numerical computing", color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
+  { icon: Code2, name: "React", desc: "Frontend UI framework", color: "#22D3EE" },
+  { icon: Layers, name: "Tailwind CSS", desc: "Utility-first styling", color: "#38BDF8" },
+  { icon: FileCode, name: "Python", desc: "Backend & model training", color: "#FACC15" },
+  { icon: Database, name: "Pandas", desc: "Data manipulation & EDA", color: "#4ADE80" },
+  { icon: Cpu, name: "Scikit-Learn", desc: "ML model training", color: "#FB923C" },
+  { icon: Database, name: "NumPy", desc: "Numerical computing", color: "#60A5FA" },
 ];
 
 export default function AboutSection() {
@@ -31,32 +31,38 @@ export default function AboutSection() {
   return (
     <>
       {/* About */}
-      <section id="about" className="py-20">
-        <div ref={aboutRef} className="section-fade max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="mb-10">
-            <p className="text-gray-500 text-sm font-semibold uppercase tracking-widest mb-2">About AirQ</p>
-            <h2 className="text-3xl font-bold text-white">
-              Understanding the <span className="text-emerald-400">Challenge</span>
-            </h2>
+      <section id="about" className="about-section">
+        <div ref={aboutRef} className="section-fade about-container">
+          {/* Liquid Glass Header */}
+          <div className="about-header-card">
+            <div className="about-header-glow-1"></div>
+            <div className="about-header-glow-2"></div>
+
+            <div className="about-header-content">
+              <p className="about-eyebrow">About AirQ</p>
+              <h2 className="about-title">
+                Understanding the <span>Challenge</span>
+              </h2>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="about-grid">
             {/* The Problem */}
-            <div className="depth-card bg-[#3F4448] rounded-2xl p-7">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center justify-center">
-                  <AlertCircle className="w-5 h-5 text-red-400" />
+            <div className="depth-card about-card">
+              <div className="about-card-title-wrap">
+                <div className="about-card-icon-box" style={{ backgroundColor: "rgba(248, 113, 113, 0.1)", borderColor: "rgba(248, 113, 113, 0.2)" }}>
+                  <AlertCircle className="w-5 h-5" style={{ color: "#F87171" }} />
                 </div>
-                <h3 className="text-white font-bold text-lg">The Problem</h3>
+                <h3 className="about-card-title">The Problem</h3>
               </div>
-              <div className="space-y-3 text-gray-400 text-sm leading-relaxed">
+              <div className="about-card-body">
                 <p>
                   Air pollution in Indian cities is one of the most severe public health crises of our time.
                   India is home to 9 of the world&apos;s 10 most polluted cities, with Delhi routinely recording
                   AQI levels above 400 — classified as &quot;Severe&quot; on the national index.
                 </p>
                 <p>
-                  The danger lies not just in the pollution itself, but in its <span className="text-white font-medium">unpredictability</span>.
+                  The danger lies not just in the pollution itself, but in its <span>unpredictability</span>.
                   Sudden spikes driven by vehicle emissions, industrial output, crop burning, and adverse
                   meteorological conditions catch residents off-guard, leading to preventable hospitalizations
                   and long-term respiratory damage.
@@ -70,22 +76,22 @@ export default function AboutSection() {
             </div>
 
             {/* The Solution */}
-            <div className="depth-card bg-[#3F4448] rounded-2xl p-7">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center">
-                  <Lightbulb className="w-5 h-5 text-emerald-400" />
+            <div className="depth-card about-card">
+              <div className="about-card-title-wrap">
+                <div className="about-card-icon-box" style={{ backgroundColor: "rgba(52, 211, 153, 0.1)", borderColor: "rgba(52, 211, 153, 0.2)" }}>
+                  <Lightbulb className="w-5 h-5" style={{ color: "#34D399" }} />
                 </div>
-                <h3 className="text-white font-bold text-lg">The Solution</h3>
+                <h3 className="about-card-title">The Solution</h3>
               </div>
-              <div className="space-y-3 text-gray-400 text-sm leading-relaxed">
+              <div className="about-card-body">
                 <p>
                   AirQ addresses this challenge with a machine learning-powered forecasting system trained on
-                  <span className="text-white font-medium"> historical lag data and weather variables</span>.
+                  <span> historical lag data and weather variables</span>.
                   By treating past AQI values (1-hour and 24-hour lags) as the most predictive features,
                   the model captures the momentum of pollution events before they peak.
                 </p>
                 <p>
-                  The core algorithm — a <span className="text-emerald-400 font-medium">Random Forest Regressor</span> —
+                  The core algorithm — a <span className="highlight">Random Forest Regressor</span> —
                   was chosen for its robustness to non-linear relationships, resistance to overfitting on tabular
                   data, and interpretability through feature importance scores.
                 </p>
@@ -101,29 +107,36 @@ export default function AboutSection() {
       </section>
 
       {/* Project Details */}
-      <section id="project" className="py-20 bg-[#2A2D30]/50">
-        <div ref={projectRef} className="section-fade max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="mb-10">
-            <p className="text-gray-500 text-sm font-semibold uppercase tracking-widest mb-2">Technical</p>
-            <h2 className="text-3xl font-bold text-white">
-              Project <span className="text-emerald-400">Details</span>
-            </h2>
+      <section id="project" className="about-section-alt">
+        <div ref={projectRef} className="section-fade about-container">
+          {/* Liquid Glass Header */}
+          <div className="about-header-card">
+            <div className="about-header-glow-1"></div>
+            <div className="about-header-glow-2"></div>
+
+            <div className="about-header-content">
+              <p className="about-eyebrow">Technical</p>
+              <h2 className="about-title">
+                Project <span>Details</span>
+              </h2>
+            </div>
           </div>
 
           {/* Tech stack */}
-          <div className="mb-10">
-            <h3 className="text-white font-semibold text-lg mb-5">Tech Stack</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div>
+            <h3 className="about-tech-subtitle">Tech Stack</h3>
+            <div className="about-tech-grid">
               {techStack.map((tech) => {
                 const Icon = tech.icon;
                 return (
                   <div
                     key={tech.name}
-                    className={`depth-card ${tech.bg} border ${tech.border} rounded-xl p-4 text-center hover:scale-105 transition-transform`}
+                    className="depth-card about-tech-card"
+                    style={{ backgroundColor: `${tech.color}1A`, borderColor: `${tech.color}33` }}
                   >
-                    <Icon className={`w-6 h-6 ${tech.color} mx-auto mb-2`} />
-                    <p className={`text-sm font-bold ${tech.color}`}>{tech.name}</p>
-                    <p className="text-gray-500 text-xs mt-0.5">{tech.desc}</p>
+                    <Icon className="w-6 h-6 mx-auto mb-2" style={{ color: tech.color }} />
+                    <p className="about-tech-name" style={{ color: tech.color }}>{tech.name}</p>
+                    <p className="about-tech-desc">{tech.desc}</p>
                   </div>
                 );
               })}
@@ -131,30 +144,30 @@ export default function AboutSection() {
           </div>
 
           {/* Model explanation */}
-          <div className="depth-card bg-[#3F4448] rounded-2xl p-7">
-            <h3 className="text-white font-bold text-lg mb-5 flex items-center gap-2">
-              <Cpu className="w-5 h-5 text-emerald-400" />
+          <div className="depth-card about-model-card">
+            <h3 className="about-model-title">
+              <Cpu className="w-5 h-5" style={{ color: "#34D399" }} />
               Random Forest Regressor — How It Works
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-400 text-sm leading-relaxed">
+            <div className="about-model-grid">
               <div>
-                <h4 className="text-white font-semibold mb-2">Architecture</h4>
-                <p className="mb-3">
+                <h4 className="about-model-sub">Architecture</h4>
+                <p style={{ marginBottom: "0.75rem" }}>
                   A Random Forest is an ensemble of decision trees, each trained on a random bootstrap sample
                   of the training data. For regression tasks like AQI prediction, the final output is the
                   mean prediction across all trees — typically 100–500 estimators.
                 </p>
                 <p>
                   Each tree independently learns non-linear splits on features like{" "}
-                  <span className="text-emerald-400 font-mono text-xs">AQI_lag24</span>,{" "}
-                  <span className="text-emerald-400 font-mono text-xs">temperature</span>, and{" "}
-                  <span className="text-emerald-400 font-mono text-xs">wind_speed</span>.
+                  <span style={{ color: "#6EE7B7", fontFamily: "monospace", fontSize: "0.75rem" }}>AQI_lag24</span>,{" "}
+                  <span style={{ color: "#6EE7B7", fontFamily: "monospace", fontSize: "0.75rem" }}>temperature</span>, and{" "}
+                  <span style={{ color: "#6EE7B7", fontFamily: "monospace", fontSize: "0.75rem" }}>wind_speed</span>.
                   By averaging, the ensemble cancels out individual tree variance.
                 </p>
               </div>
               <div>
-                <h4 className="text-white font-semibold mb-2">Key Features Used</h4>
-                <ul className="space-y-1.5">
+                <h4 className="about-model-sub">Key Features Used</h4>
+                <ul className="about-model-list">
                   {[
                     { name: "AQI_lag24", pct: "41%", desc: "AQI value 24 hours prior" },
                     { name: "AQI_lag1", pct: "28%", desc: "AQI value 1 hour prior" },
@@ -163,13 +176,13 @@ export default function AboutSection() {
                     { name: "Hour", pct: "5%", desc: "Diurnal traffic patterns" },
                     { name: "Precipitation", pct: "3%", desc: "Wet deposition effect" },
                   ].map((f) => (
-                    <li key={f.name} className="flex items-center justify-between gap-2">
-                      <span className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-                        <span className="text-emerald-300 font-mono text-xs">{f.name}</span>
-                        <span className="text-gray-500 text-xs">{f.desc}</span>
+                    <li key={f.name} className="about-model-li">
+                      <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <span style={{ width: "0.375rem", height: "0.375rem", backgroundColor: "#34D399", borderRadius: "50%" }} />
+                        <span style={{ color: "#6EE7B7", fontFamily: "monospace", fontSize: "0.75rem" }}>{f.name}</span>
+                        <span style={{ color: "var(--color-gray-500)", fontSize: "0.75rem" }}>{f.desc}</span>
                       </span>
-                      <span className="text-emerald-400 text-xs font-bold">{f.pct}</span>
+                      <span style={{ color: "#34D399", fontSize: "0.75rem", fontWeight: "700" }}>{f.pct}</span>
                     </li>
                   ))}
                 </ul>
@@ -180,28 +193,36 @@ export default function AboutSection() {
       </section>
 
       {/* Developer Credits */}
-      <section id="credits" className="py-20">
-        <div ref={creditsRef} className="section-fade max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-gray-500 text-sm font-semibold uppercase tracking-widest mb-2">Credits</p>
-          <h2 className="text-3xl font-bold text-white mb-8">
-            Developer <span className="text-emerald-400">Credits</span>
-          </h2>
+      <section id="credits" className="about-section">
+        <div ref={creditsRef} className="section-fade about-credits-container">
+          {/* Liquid Glass Header */}
+          <div className="about-header-card">
+            <div className="about-header-glow-1" style={{ top: "50%", left: "0", transform: "translate(-50%, -50%)" }}></div>
+            <div className="about-header-glow-2" style={{ top: "50%", right: "0", transform: "translate(50%, -50%)" }}></div>
 
-          <div className="depth-card bg-[#3F4448] rounded-2xl p-8">
+            <div className="about-header-content">
+              <p className="about-eyebrow">Credits</p>
+              <h2 className="about-title">
+                Developer <span>Credits</span>
+              </h2>
+            </div>
+          </div>
+
+          <div className="depth-card about-card">
             {/* Avatar */}
-            <div className="w-20 h-20 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto mb-5">
-              <span className="text-3xl font-extrabold text-emerald-400">P</span>
+            <div className="about-avatar">
+              <span>P</span>
             </div>
 
-            <h3 className="text-2xl font-extrabold text-white mb-1">Pratham</h3>
-            <p className="text-emerald-400 font-semibold mb-1">Full-Stack Developer & ML Engineer</p>
-            <p className="text-gray-400 text-sm mb-2">BCA Student · Christ University, Bangalore</p>
-            <p className="text-gray-500 text-xs mb-6">
+            <h3 className="about-dev-name">Pratham</h3>
+            <p className="about-dev-role">Full-Stack Developer & ML Engineer</p>
+            <p className="about-dev-edu">BCA Student · Christ University, Bangalore</p>
+            <p className="about-dev-desc" style={{ marginBottom: "1.5rem" }}>
               Developed and trained the AirQ prediction system as part of academic research into
               environmental machine learning and real-time data applications.
             </p>
 
-            <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+            <p className="about-dev-desc" style={{ marginBottom: "1.5rem" }}>
               This project combines data science, meteorological modeling, and modern web development
               to address one of India&apos;s most pressing public health challenges. AirQ was designed,
               built, and trained entirely by Pratham — from feature engineering and model evaluation
@@ -209,12 +230,12 @@ export default function AboutSection() {
             </p>
 
             {/* Links */}
-            <div className="flex items-center justify-center gap-4">
+            <div className="about-links">
               <a
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-5 py-2.5 bg-[#2F3336] hover:bg-[#4A5055] border border-white/10 text-gray-300 hover:text-white text-sm font-semibold rounded-xl transition-all"
+                className="about-btn-gh"
               >
                 <Github className="w-4 h-4" />
                 GitHub
@@ -223,7 +244,7 @@ export default function AboutSection() {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-5 py-2.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/20 text-blue-400 text-sm font-semibold rounded-xl transition-all"
+                className="about-btn-in"
               >
                 <Linkedin className="w-4 h-4" />
                 LinkedIn
@@ -231,7 +252,7 @@ export default function AboutSection() {
             </div>
           </div>
 
-          <p className="text-gray-600 text-xs mt-6">
+          <p className="about-techstack-footer">
             Built with React · Tailwind CSS · Recharts · Next.js · Python · Scikit-Learn
           </p>
         </div>

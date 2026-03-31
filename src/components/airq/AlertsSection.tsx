@@ -11,12 +11,8 @@ const alerts = [
     city: "Delhi",
     time: "2 min ago",
     title: "AQI predicted to spike by 45 points",
-    detail:
-      "Model detects sustained low wind speeds (<4 km/h) combined with rising traffic hours. AQI expected to cross 220 by 9:00 PM.",
-    color: "text-orange-400",
-    bg: "bg-orange-500/10",
-    border: "border-orange-500/20",
-    dot: "bg-orange-400",
+    detail: "Model detects sustained low wind speeds (<4 km/h) combined with rising traffic hours. AQI expected to cross 220 by 9:00 PM.",
+    color: "#FB923C",
   },
   {
     id: 2,
@@ -25,12 +21,8 @@ const alerts = [
     city: "Mumbai",
     time: "11 min ago",
     title: "Coastal winds expected to clear pollution",
-    detail:
-      "Sea-breeze pattern developing offshore. AQI forecast to drop from 85 to 55 over the next 6 hours.",
-    color: "text-emerald-400",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/20",
-    dot: "bg-emerald-400",
+    detail: "Sea-breeze pattern developing offshore. AQI forecast to drop from 85 to 55 over the next 6 hours.",
+    color: "#34D399",
   },
   {
     id: 3,
@@ -39,12 +31,8 @@ const alerts = [
     city: "Kolkata",
     time: "28 min ago",
     title: "Moderate deterioration trend detected",
-    detail:
-      "AQI has been climbing for 3 consecutive hours. Current: 148. Predicted: 172 in 4h. Cause: vehicle congestion + calm meteorology.",
-    color: "text-yellow-400",
-    bg: "bg-yellow-500/10",
-    border: "border-yellow-500/20",
-    dot: "bg-yellow-400",
+    detail: "AQI has been climbing for 3 consecutive hours. Current: 148. Predicted: 172 in 4h. Cause: vehicle congestion + calm meteorology.",
+    color: "#FACC15",
   },
   {
     id: 4,
@@ -53,12 +41,8 @@ const alerts = [
     city: "Hyderabad",
     time: "45 min ago",
     title: "Stable AQI conditions forecast",
-    detail:
-      "No significant changes expected in the next 24 hours. Moderate wind activity keeping pollutant dispersion at healthy levels.",
-    color: "text-blue-400",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/20",
-    dot: "bg-blue-400",
+    detail: "No significant changes expected in the next 24 hours. Moderate wind activity keeping pollutant dispersion at healthy levels.",
+    color: "#60A5FA",
   },
   {
     id: 5,
@@ -67,12 +51,8 @@ const alerts = [
     city: "Delhi",
     time: "1 hr ago",
     title: "Stubble burning impact detected in north districts",
-    detail:
-      "Satellite data and lag-24 feature showing elevated PM2.5 precursor signals. Peak AQI likely between 11 PM–2 AM.",
-    color: "text-red-400",
-    bg: "bg-red-500/10",
-    border: "border-red-500/20",
-    dot: "bg-red-400",
+    detail: "Satellite data and lag-24 feature showing elevated PM2.5 precursor signals. Peak AQI likely between 11 PM–2 AM.",
+    color: "#F87171",
   },
   {
     id: 6,
@@ -81,12 +61,8 @@ const alerts = [
     city: "Bangalore",
     time: "2 hrs ago",
     title: "Rain event cleared overnight pollution",
-    detail:
-      "Rainfall of 8mm recorded early morning. AQI has improved from 95 to 48 — now in 'Good' category.",
-    color: "text-emerald-400",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/20",
-    dot: "bg-emerald-400",
+    detail: "Rainfall of 8mm recorded early morning. AQI has improved from 95 to 48 — now in 'Good' category.",
+    color: "#34D399",
   },
 ];
 
@@ -105,76 +81,74 @@ export default function AlertsSection() {
   }, []);
 
   return (
-    <section id="alerts" className="py-20">
-      <div
-        ref={sectionRef}
-        className="section-fade max-w-7xl mx-auto px-4 sm:px-6"
-      >
+    <section id="alerts" className="alerts-section">
+      <div ref={sectionRef} className="section-fade alerts-container">
         {/* Header */}
-        <div className="mb-10">
-          <p className="text-gray-500 text-sm font-semibold uppercase tracking-widest mb-2">
-            Live Feed
-          </p>
-          <h2 className="text-3xl font-bold text-white">
-            Alerts &amp; <span className="text-emerald-400">Notifications</span>
+        <div className="alerts-header">
+          <p className="alerts-eyebrow">Live Feed</p>
+          <h2 className="alerts-title">
+            Alerts &amp; <span>Notifications</span>
           </h2>
-          <p className="text-gray-400 mt-2 text-sm">
+          <p className="alerts-desc">
             Real-time model-generated alerts for air quality events across monitored cities.
           </p>
         </div>
 
         {/* Stats bar */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="alerts-stats">
           {[
-            { label: "Active Warnings", value: "2", color: "text-orange-400" },
-            { label: "Clearance Events", value: "2", color: "text-emerald-400" },
-            { label: "Info Updates", value: "2", color: "text-blue-400" },
+            { label: "Active Warnings", value: "2", color: "#FB923C" },
+            { label: "Clearance Events", value: "2", color: "#34D399" },
+            { label: "Info Updates", value: "2", color: "#60A5FA" },
           ].map((s) => (
-            <div key={s.label} className="depth-card bg-[#3F4448] rounded-2xl p-4 text-center">
-              <p className={`text-3xl font-extrabold ${s.color}`}>{s.value}</p>
-              <p className="text-gray-500 text-xs mt-0.5">{s.label}</p>
+            <div key={s.label} className="depth-card alerts-stat-card">
+              <p className="alerts-stat-val" style={{ color: s.color }}>{s.value}</p>
+              <p className="alerts-stat-label">{s.label}</p>
             </div>
           ))}
         </div>
 
         {/* Timeline */}
-        <div className="relative">
+        <div className="alerts-timeline">
           {/* vertical line */}
-          <div className="absolute left-6 top-0 bottom-0 w-px bg-white/5 hidden sm:block" />
+          <div className="alerts-timeline-line" />
 
-          <div className="flex flex-col gap-4">
+          <div className="alerts-list">
             {alerts.map((alert) => {
               const Icon = alert.icon;
               return (
                 <div
                   key={alert.id}
-                  className={`depth-card relative sm:pl-16 bg-[#3F4448] rounded-2xl p-5 border ${alert.border} hover:translate-y-[-2px] transition-all duration-200`}
+                  className="depth-card alerts-card"
+                  style={{ borderColor: `${alert.color}33` }}
                 >
                   {/* Timeline dot */}
                   <div
-                    className={`hidden sm:flex absolute left-3.5 top-5 w-5 h-5 rounded-full ${alert.bg} border ${alert.border} items-center justify-center`}
+                    className="alerts-dot-outer"
+                    style={{ backgroundColor: `${alert.color}1A`, borderColor: `${alert.color}33` }}
                   >
-                    <span className={`w-2 h-2 rounded-full ${alert.dot}`} />
+                    <span className="alerts-dot-inner" style={{ backgroundColor: alert.color }} />
                   </div>
 
-                  <div className="flex items-start gap-3">
+                  <div className="alerts-content">
                     <div
-                      className={`flex-shrink-0 w-9 h-9 rounded-xl ${alert.bg} border ${alert.border} flex items-center justify-center sm:hidden`}
+                      className="alerts-mobile-icon"
+                      style={{ backgroundColor: `${alert.color}1A`, borderColor: `${alert.color}33` }}
                     >
-                      <Icon className={`w-4 h-4 ${alert.color}`} />
+                      <Icon className="w-4 h-4" style={{ color: alert.color }} />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
-                        <div className="flex items-center gap-2">
-                          <Icon className={`w-4 h-4 ${alert.color} hidden sm:block`} />
-                          <span className={`text-sm font-bold ${alert.color}`}>
+                    <div className="alerts-info">
+                      <div className="alerts-meta">
+                        <div className="alerts-city-tag">
+                          <Icon className="alerts-desktop-icon" style={{ color: alert.color }} />
+                          <span style={{ color: alert.color }}>
                             {alert.city} Alert
                           </span>
                         </div>
-                        <span className="text-gray-600 text-xs">{alert.time}</span>
+                        <span className="alerts-time">{alert.time}</span>
                       </div>
-                      <p className="text-white text-sm font-semibold mb-1">{alert.title}</p>
-                      <p className="text-gray-400 text-xs leading-relaxed">{alert.detail}</p>
+                      <p className="alerts-item-title">{alert.title}</p>
+                      <p className="alerts-item-desc">{alert.detail}</p>
                     </div>
                   </div>
                 </div>

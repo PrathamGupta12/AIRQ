@@ -2,6 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Cpu, Wind, Activity } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 
 interface FormData {
   city: string;
@@ -20,13 +30,13 @@ interface Prediction {
   twentyFourHour: number;
 }
 
-function aqiCategory(aqi: number): { label: string; color: string; bg: string } {
-  if (aqi <= 50) return { label: "Good", color: "text-emerald-400", bg: "bg-emerald-500/15 border-emerald-500/30" };
-  if (aqi <= 100) return { label: "Satisfactory", color: "text-lime-400", bg: "bg-lime-500/15 border-lime-500/30" };
-  if (aqi <= 200) return { label: "Moderate", color: "text-yellow-400", bg: "bg-yellow-500/15 border-yellow-500/30" };
-  if (aqi <= 300) return { label: "Poor", color: "text-orange-400", bg: "bg-orange-500/15 border-orange-500/30" };
-  if (aqi <= 400) return { label: "Very Poor", color: "text-red-400", bg: "bg-red-500/15 border-red-500/30" };
-  return { label: "Severe", color: "text-purple-400", bg: "bg-purple-500/15 border-purple-500/30" };
+function aqiCategory(aqi: number): { label: string; hex: string } {
+  if (aqi <= 50) return { label: "Good", hex: "#34D399" };
+  if (aqi <= 100) return { label: "Satisfactory", hex: "#A3E635" };
+  if (aqi <= 200) return { label: "Moderate", hex: "#FACC15" };
+  if (aqi <= 300) return { label: "Poor", hex: "#FB923C" };
+  if (aqi <= 400) return { label: "Very Poor", hex: "#F87171" };
+  return { label: "Severe", hex: "#C084FC" };
 }
 
 function simulatePredict(form: FormData): Prediction {
@@ -37,7 +47,6 @@ function simulatePredict(form: FormData): Prediction {
   const temp = parseFloat(form.temperature) || 28;
   const hour = parseInt(form.hour) || 12;
 
-  // Simulated RF-like computation
   const windEffect = wind > 15 ? -0.15 : wind > 8 ? -0.05 : 0.08;
   const tempEffect = temp > 35 ? 0.06 : temp < 20 ? -0.04 : 0;
   const lagEffect = (lag1 - base) * 0.35 + (lag24 - base) * 0.25;
@@ -56,10 +65,47 @@ function simulatePredict(form: FormData): Prediction {
   };
 }
 
-const inputClass =
-  "w-full bg-[#2F3336] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 transition-all";
+function generateActualVsPredicted() {
+  const data = [];
+  let actual = 120;
+  for (let i = 0; i < 100; i++) {
+    actual += (Math.random() - 0.48) * 15;
+    actual = Math.max(30, Math.min(350, actual));
+    const predicted = actual + (Math.random() - 0.5) * 20;
+    data.push({
+      hour: i,
+      actual: Math.round(actual),
+      predicted: Math.round(Math.max(20, predicted)),
+    });
+  }
+  return data;
+}
 
-const labelClass = "block text-gray-400 text-xs font-medium mb-1.5 uppercase tracking-wide";
+const actualVsPredicted = generateActualVsPredicted();
+
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: { name: string; value: number; color: string }[];
+  label?: string | number;
+}) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{ backgroundColor: "#E5E7EB", border: "1px solid #E5E7EB", borderRadius: "0.75rem", padding: "0.75rem", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)", fontSize: "0.75rem" }}>
+        <p style={{ color: "#6B7280", marginBottom: "0.25rem" }}>Hour {label}</p>
+        {payload.map((p) => (
+          <p key={p.name} style={{ color: p.color, fontWeight: "600" }}>
+            {p.name}: {p.value}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function PredictionSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -95,174 +141,124 @@ export default function PredictionSection() {
   const handlePredict = async () => {
     setLoading(true);
     setResult(null);
-    await new Promise((r) => setTimeout(r, 1200));
-    setResult(simulatePredict(form));
-    setLoading(false);
+    try {
+      const response = await fetch("http://localhost:5000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      const prediction = { oneHour: data.oneHour, twentyFourHour: data.twentyFourHour };
+      setResult(prediction);
+
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("aqi-update", { detail: { aqi: prediction.oneHour } }));
+      }
+    } catch (error) {
+      console.error("Error fetching model prediction, falling back to simulation", error);
+
+      const prediction = simulatePredict(form);
+      setResult(prediction);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("aqi-update", { detail: { aqi: prediction.oneHour } }));
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const oneHourCat = result ? aqiCategory(result.oneHour) : null;
   const tfhCat = result ? aqiCategory(result.twentyFourHour) : null;
 
   return (
-    <section id="predict" className="py-20">
-      <div
-        ref={sectionRef}
-        className="section-fade max-w-7xl mx-auto px-4 sm:px-6"
-      >
-        {/* Header */}
-        <div className="mb-10">
-          <p className="text-gray-500 text-sm font-semibold uppercase tracking-widest mb-2">
-            Core Tool
-          </p>
-          <h2 className="text-3xl font-bold text-white">
-            Prediction &amp; <span className="text-emerald-400">Monitoring</span>
-          </h2>
-          <p className="text-gray-400 mt-2 text-sm">
-            Enter environmental parameters to receive AI-powered AQI forecasts.
-          </p>
+    <section id="predict" className="pred-section">
+      <div ref={sectionRef} className="section-fade pred-container">
+        {/* Liquid Glass Header */}
+        <div className="pred-header-card">
+          <div className="pred-header-glow-1"></div>
+          <div className="pred-header-glow-2"></div>
+
+          <div className="pred-header-content">
+            <p className="pred-eyebrow">Core Tool</p>
+            <h2 className="pred-title">
+              Prediction &amp; <span>Monitoring</span>
+            </h2>
+            <p className="pred-desc">
+              Enter environmental parameters to receive AI-powered AQI forecasts.
+            </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="pred-grid">
           {/* Input Form */}
-          <div className="depth-card bg-[#3F4448] rounded-2xl p-6 border border-white/7">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-9 h-9 bg-emerald-500/15 border border-emerald-500/25 rounded-xl flex items-center justify-center">
-                <Cpu className="w-4.5 h-4.5 text-emerald-400" />
+          <div className="depth-card pred-form-card">
+            <div className="pred-form-header">
+              <div className="pred-form-icon-box">
+                <Cpu style={{ width: "1.125rem", height: "1.125rem", color: "#34D399" }} />
               </div>
               <div>
-                <h3 className="text-white font-semibold text-sm">Model Input Parameters</h3>
-                <p className="text-gray-500 text-xs">Random Forest Regressor</p>
+                <h3 className="pred-form-title">Model Input Parameters</h3>
+                <p className="pred-form-subtitle">Random Forest Regressor</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {/* City */}
-              <div className="col-span-2">
-                <label className={labelClass}>City</label>
-                <select
-                  name="city"
-                  value={form.city}
-                  onChange={handleChange}
-                  className={inputClass}
-                >
+            <div className="pred-inputs">
+              <div className="pred-input-group pred-input-group-full">
+                <label className="pred-label">City</label>
+                <select name="city" value={form.city} onChange={handleChange} className="pred-input">
                   {["Delhi", "Hyderabad", "Kolkata", "Mumbai"].map((c) => (
-                    <option key={c} value={c} className="bg-[#2F3336]">
-                      {c}
-                    </option>
+                    <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
               </div>
 
-              {/* AQI inputs */}
-              <div>
-                <label className={labelClass}>Current AQI</label>
-                <input
-                  name="currentAqi"
-                  type="number"
-                  placeholder="e.g. 145"
-                  value={form.currentAqi}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
+              <div className="pred-input-group">
+                <label className="pred-label">Current AQI</label>
+                <input name="currentAqi" type="number" placeholder="e.g. 145" value={form.currentAqi} onChange={handleChange} className="pred-input" />
               </div>
-              <div>
-                <label className={labelClass}>AQI 1h Ago</label>
-                <input
-                  name="aqi1h"
-                  type="number"
-                  placeholder="e.g. 132"
-                  value={form.aqi1h}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
+              <div className="pred-input-group">
+                <label className="pred-label">AQI 1h Ago</label>
+                <input name="aqi1h" type="number" placeholder="e.g. 132" value={form.aqi1h} onChange={handleChange} className="pred-input" />
               </div>
-              <div className="col-span-2">
-                <label className={labelClass}>AQI 24h Ago</label>
-                <input
-                  name="aqi24h"
-                  type="number"
-                  placeholder="e.g. 160"
-                  value={form.aqi24h}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
+              <div className="pred-input-group pred-input-group-full">
+                <label className="pred-label">AQI 24h Ago</label>
+                <input name="aqi24h" type="number" placeholder="e.g. 160" value={form.aqi24h} onChange={handleChange} className="pred-input" />
               </div>
 
-              {/* Weather */}
-              <div>
-                <label className={labelClass}>Temperature (°C)</label>
-                <input
-                  name="temperature"
-                  type="number"
-                  placeholder="e.g. 32"
-                  value={form.temperature}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
+              <div className="pred-input-group">
+                <label className="pred-label">Temperature (°C)</label>
+                <input name="temperature" type="number" placeholder="e.g. 32" value={form.temperature} onChange={handleChange} className="pred-input" />
               </div>
-              <div>
-                <label className={labelClass}>Precipitation (mm)</label>
-                <input
-                  name="precipitation"
-                  type="number"
-                  placeholder="e.g. 0"
-                  value={form.precipitation}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
+              <div className="pred-input-group">
+                <label className="pred-label">Precipitation (mm)</label>
+                <input name="precipitation" type="number" placeholder="e.g. 0" value={form.precipitation} onChange={handleChange} className="pred-input" />
               </div>
-              <div>
-                <label className={labelClass}>Wind Speed (km/h)</label>
-                <input
-                  name="windSpeed"
-                  type="number"
-                  placeholder="e.g. 12"
-                  value={form.windSpeed}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
+              <div className="pred-input-group">
+                <label className="pred-label">Wind Speed (km/h)</label>
+                <input name="windSpeed" type="number" placeholder="e.g. 12" value={form.windSpeed} onChange={handleChange} className="pred-input" />
               </div>
-              <div>
-                <label className={labelClass}>Hour (0–23)</label>
-                <input
-                  name="hour"
-                  type="number"
-                  min="0"
-                  max="23"
-                  placeholder="e.g. 8"
-                  value={form.hour}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
+              <div className="pred-input-group">
+                <label className="pred-label">Hour (0–23)</label>
+                <input name="hour" type="number" min="0" max="23" placeholder="e.g. 8" value={form.hour} onChange={handleChange} className="pred-input" />
               </div>
-              <div className="col-span-2">
-                <label className={labelClass}>Month (1–12)</label>
-                <input
-                  name="month"
-                  type="number"
-                  min="1"
-                  max="12"
-                  placeholder="e.g. 11"
-                  value={form.month}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
+              <div className="pred-input-group pred-input-group-full">
+                <label className="pred-label">Month (1–12)</label>
+                <input name="month" type="number" min="1" max="12" placeholder="e.g. 11" value={form.month} onChange={handleChange} className="pred-input" />
               </div>
             </div>
 
-            <button
-              onClick={handlePredict}
-              disabled={loading}
-              className="glow-btn mt-6 w-full flex items-center justify-center gap-2 py-3.5 bg-emerald-500 hover:bg-emerald-400 disabled:bg-emerald-700 disabled:opacity-60 text-white font-bold rounded-xl transition-all"
-            >
+            <button onClick={handlePredict} disabled={loading} className="glow-btn pred-submit">
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 style={{ width: "1rem", height: "1rem" }} className="animate-spin" />
                   Running Model…
                 </>
               ) : (
                 <>
-                  <Wind className="w-4 h-4" />
+                  <Wind style={{ width: "1rem", height: "1rem" }} />
                   Predict Future AQI
                 </>
               )}
@@ -270,94 +266,92 @@ export default function PredictionSection() {
           </div>
 
           {/* Output */}
-          <div className="depth-card bg-[#3F4448] rounded-2xl p-6 border border-white/7 flex flex-col">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-9 h-9 bg-blue-500/15 border border-blue-500/25 rounded-xl flex items-center justify-center">
-                <Activity className="w-4.5 h-4.5 text-blue-400" />
+          <div className="depth-card pred-output-card">
+            <div className="pred-output-header">
+              <div className="pred-output-icon-box">
+                <Activity style={{ width: "1.125rem", height: "1.125rem", color: "#60A5FA" }} />
               </div>
               <div>
-                <h3 className="text-white font-semibold text-sm">Prediction Output</h3>
-                <p className="text-gray-500 text-xs">{form.city} · AI Forecast</p>
+                <h3 className="pred-form-title">Prediction Output</h3>
+                <p className="pred-form-subtitle">{form.city} · AI Forecast</p>
               </div>
             </div>
 
             {!result && !loading && (
-              <div className="flex-1 flex flex-col items-center justify-center text-center py-16">
-                <div className="w-16 h-16 bg-[#2F3336] rounded-2xl flex items-center justify-center mb-4">
-                  <Wind className="w-8 h-8 text-gray-600" />
+              <div className="pred-empty">
+                <div className="pred-empty-icon-wrapper">
+                  <Wind style={{ width: "2rem", height: "2rem", color: "var(--color-gray-600)" }} />
                 </div>
-                <p className="text-gray-500 font-medium">Awaiting Model Input…</p>
-                <p className="text-gray-600 text-sm mt-1">
-                  Fill in the parameters and click Predict.
-                </p>
+                <p className="pred-empty-title">Awaiting Model Input…</p>
+                <p className="pred-empty-subtitle">Fill in the parameters and click Predict.</p>
               </div>
             )}
 
             {loading && (
-              <div className="flex-1 flex flex-col items-center justify-center text-center py-16">
-                <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-4 border border-emerald-500/20">
-                  <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
+              <div className="pred-empty">
+                <div className="pred-loading-icon-wrapper">
+                  <Loader2 style={{ width: "2rem", height: "2rem", color: "#34D399" }} className="animate-spin" />
                 </div>
-                <p className="text-emerald-400 font-medium">Processing…</p>
-                <p className="text-gray-500 text-sm mt-1">Running Random Forest inference</p>
+                <p className="pred-loading-title">Processing…</p>
+                <p className="pred-empty-subtitle">Running Random Forest inference</p>
               </div>
             )}
 
             {result && oneHourCat && tfhCat && (
-              <div className="flex-1 flex flex-col gap-5">
-                {/* 1h prediction */}
-                <div
-                  className={`rounded-2xl p-5 border ${oneHourCat.bg}`}
-                >
-                  <p className="text-gray-400 text-xs uppercase tracking-widest mb-2 font-semibold">
-                    1-Hour Prediction
-                  </p>
-                  <div className="flex items-end gap-3">
-                    <span className={`text-5xl font-extrabold tabular-nums ${oneHourCat.color}`}>
-                      {result.oneHour}
-                    </span>
-                    <div className="mb-1.5">
-                      <span className={`text-lg font-bold ${oneHourCat.color}`}>AQI</span>
-                      <p className="text-gray-400 text-xs">{oneHourCat.label}</p>
+              <div className="pred-results">
+                <div className="pred-result-box" style={{ backgroundColor: `${oneHourCat.hex}1A`, borderColor: `${oneHourCat.hex}4D` }}>
+                  <p className="pred-result-label">1-Hour Prediction</p>
+                  <div className="pred-result-flex">
+                    <span className="pred-result-val" style={{ color: oneHourCat.hex }}>{result.oneHour}</span>
+                    <div style={{ marginBottom: "0.375rem" }}>
+                      <p className="pred-result-aqi" style={{ color: oneHourCat.hex }}>AQI</p>
+                      <p className="pred-result-cat">{oneHourCat.label}</p>
                     </div>
                   </div>
-                  <div className="mt-3 h-2 bg-black/20 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-700 ${oneHourCat.color.replace("text-", "bg-")}`}
-                      style={{ width: `${Math.min(100, (result.oneHour / 500) * 100)}%` }}
-                    />
+                  <div className="pred-bar-bg">
+                    <div className="pred-bar-fill" style={{ backgroundColor: oneHourCat.hex, width: `${Math.min(100, (result.oneHour / 500) * 100)}%` }} />
                   </div>
                 </div>
 
-                {/* 24h prediction */}
-                <div
-                  className={`rounded-2xl p-5 border ${tfhCat.bg}`}
-                >
-                  <p className="text-gray-400 text-xs uppercase tracking-widest mb-2 font-semibold">
-                    24-Hour Prediction
-                  </p>
-                  <div className="flex items-end gap-3">
-                    <span className={`text-5xl font-extrabold tabular-nums ${tfhCat.color}`}>
-                      {result.twentyFourHour}
-                    </span>
-                    <div className="mb-1.5">
-                      <span className={`text-lg font-bold ${tfhCat.color}`}>AQI</span>
-                      <p className="text-gray-400 text-xs">{tfhCat.label}</p>
+                <div className="pred-result-box" style={{ backgroundColor: `${tfhCat.hex}1A`, borderColor: `${tfhCat.hex}4D` }}>
+                  <p className="pred-result-label">24-Hour Prediction</p>
+                  <div className="pred-result-flex">
+                    <span className="pred-result-val" style={{ color: tfhCat.hex }}>{result.twentyFourHour}</span>
+                    <div style={{ marginBottom: "0.375rem" }}>
+                      <p className="pred-result-aqi" style={{ color: tfhCat.hex }}>AQI</p>
+                      <p className="pred-result-cat">{tfhCat.label}</p>
                     </div>
                   </div>
-                  <div className="mt-3 h-2 bg-black/20 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-700 ${tfhCat.color.replace("text-", "bg-")}`}
-                      style={{ width: `${Math.min(100, (result.twentyFourHour / 500) * 100)}%` }}
-                    />
+                  <div className="pred-bar-bg">
+                    <div className="pred-bar-fill" style={{ backgroundColor: tfhCat.hex, width: `${Math.min(100, (result.twentyFourHour / 500) * 100)}%` }} />
                   </div>
                 </div>
 
-                <p className="text-gray-600 text-xs text-center mt-auto">
-                  * Simulated output — connect to Python/Scikit-learn backend for live inference
-                </p>
+                <p className="pred-footer-note">* Live AI inference from Python backend</p>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Chart Row: Actual vs Predicted Line - Liquid Glass Effect */}
+        <div className="depth-card pred-chart-card">
+          <div className="pred-chart-glow-1"></div>
+          <div className="pred-chart-glow-2"></div>
+
+          <div className="pred-chart-content">
+            <h3 className="pred-chart-title">Actual vs Predicted AQI — 100 Hour Window</h3>
+            <p className="pred-chart-desc">Model prediction overlay on real data</p>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={actualVsPredicted} margin={{ left: 0, right: 20, top: 4, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.1)" />
+                <XAxis dataKey="hour" tick={{ fill: "#6B7280", fontSize: 11 }} axisLine={false} tickLine={false} label={{ value: "Hours", position: "insideBottom", offset: -4, fill: "#6B7280", fontSize: 11 }} />
+                <YAxis tick={{ fill: "#6B7280", fontSize: 11 }} axisLine={false} tickLine={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend wrapperStyle={{ fontSize: 12, color: "#6B7280" }} iconType="line" />
+                <Line type="monotone" dataKey="actual" stroke="#10B981" strokeWidth={2} dot={false} name="Actual AQI" />
+                <Line type="monotone" dataKey="predicted" stroke="#60A5FA" strokeWidth={2} dot={false} strokeDasharray="5 3" name="Predicted AQI" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>

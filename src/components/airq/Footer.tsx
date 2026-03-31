@@ -16,29 +16,29 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#262A2D] border-t border-white/5 py-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer className="footer">
+      <div className="footer-container">
+        <div className="footer-layout">
           {/* Brand */}
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
-              <Wind className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="footer-brand">
+            <div className="footer-logo-icon">
+              <Wind />
             </div>
-            <span className="font-bold text-base">
-              <span className="text-emerald-400">Air</span>
-              <span className="text-white">Q</span>
+            <span className="footer-brand-title">
+              <span className="footer-brand-p1">Air</span>
+              <span className="footer-brand-p2">Q</span>
             </span>
-            <span className="text-gray-500 text-sm ml-2">AI Air Quality Prediction</span>
+            <span className="footer-brand-subtitle">AI Air Quality Prediction</span>
           </div>
 
           {/* Links */}
-          <nav className="flex items-center gap-6">
+          <nav className="footer-nav">
             {footerLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 onClick={(e) => scrollTo(e, link.href)}
-                className="text-sm text-gray-400 hover:text-emerald-400 transition-colors"
+                className="footer-link"
               >
                 {link.label}
               </a>
@@ -46,9 +46,9 @@ export default function Footer() {
           </nav>
 
           {/* Copyright */}
-          <p className="text-xs text-gray-500">
+          <p className="footer-copyright">
             © 2024 AirQ. Developed by{" "}
-            <span className="text-emerald-400 font-medium">Pratham</span> · BCA, Christ University
+            <span>Pratham</span> · BCA, Christ University
           </p>
         </div>
       </div>
