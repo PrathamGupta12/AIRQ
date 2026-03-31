@@ -95,12 +95,13 @@
     border-radius: 1rem;
     padding: 1.75rem;
     border: 1px solid var(--color-gray-200);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.15s ease-out;
 }
 
 .about-card:hover {
-    transform: translateY(-4px) scale(1.01);
-    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 25px 45px -5px rgba(0, 0, 0, 0.15);
+    z-index: 10;
 }
 
 .about-card-title-wrap {
@@ -363,7 +364,7 @@
 
 .about-container.visible .about-card {
     opacity: 0;
-    animation: aboutPopUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: aboutPopUp 0.3s ease-out forwards;
 }
 
 .about-container.visible .about-grid .about-card:nth-child(1) {
@@ -376,7 +377,7 @@
 
 .about-container.visible .about-tech-card {
     opacity: 0;
-    animation: aboutPopUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: aboutPopUp 0.25s ease-out forwards;
 }
 
 .about-container.visible .about-tech-card:nth-child(1) {
@@ -405,12 +406,76 @@
 
 .about-container.visible .about-model-card {
     opacity: 0;
-    animation: aboutPopUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: aboutPopUp 0.3s ease-out forwards;
     animation-delay: 0.4s;
 }
 
 .about-credits-container.visible .about-card {
     opacity: 0;
-    animation: aboutPopUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: aboutPopUp 0.3s ease-out forwards;
     animation-delay: 0.1s;
+}
+
+/* Font-size hover animations */
+.about-card-title,
+.about-card-body,
+.about-tech-name,
+.about-tech-desc,
+.about-dev-name,
+.about-dev-role,
+.about-dev-desc {
+    transition: font-size 0.15s ease-out;
+}
+
+.about-card:hover .about-card-title {
+    font-size: 1.25rem;
+}
+
+.about-card:hover .about-card-body {
+    font-size: 0.95rem;
+}
+
+.about-tech-card:hover .about-tech-name {
+    font-size: 1rem;
+}
+
+.about-tech-card:hover .about-tech-desc {
+    font-size: 0.875rem;
+}
+
+.about-card:hover .about-dev-name {
+    font-size: 1.625rem;
+}
+
+.about-card:hover .about-dev-role {
+    font-size: 1rem;
+}
+
+.about-card:hover .about-dev-desc {
+    font-size: 0.875rem;
+}
+
+/* Glassmorphism Hover Glow Effect */
+.about-header-card {
+    transition: all 0.4s ease;
+}
+
+.about-header-card:hover {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), 0 20px 50px -5px rgba(52, 211, 153, 0.3);
+    transform: translateY(-2px);
+}
+
+.about-header-glow-1,
+.about-header-glow-2 {
+    transition: all 0.4s ease;
+}
+
+.about-header-card:hover .about-header-glow-1 {
+    background-color: rgba(52, 211, 153, 0.5);
+    transform: scale(1.8);
+}
+
+.about-header-card:hover .about-header-glow-2 {
+    background-color: rgba(96, 165, 250, 0.4);
+    transform: scale(1.8);
 }

@@ -16,6 +16,34 @@
 
 .alerts-header {
     margin-bottom: 2.5rem;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 1.5rem;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.alerts-header::before {
+    content: '';
+    position: absolute;
+    top: -5rem;
+    right: -5rem;
+    width: 15rem;
+    height: 15rem;
+    background-color: rgba(16, 185, 129, 0.15);
+    border-radius: 50%;
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.alerts-header>* {
+    position: relative;
+    z-index: 10;
 }
 
 .alerts-eyebrow {
@@ -56,12 +84,13 @@
     padding: 1rem;
     border: 1px solid var(--color-gray-200);
     text-align: center;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.15s ease-out;
 }
 
 .alerts-stat-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15);
+    z-index: 10;
 }
 
 .alerts-stat-val {
@@ -107,12 +136,12 @@
     border-radius: 1rem;
     padding: 1.25rem;
     border: 1px solid var(--color-gray-200);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.15s ease-out;
 }
 
 .alerts-card:hover {
-    transform: translateY(-4px) scale(1.01);
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 25px 45px -5px rgba(0, 0, 0, 0.15);
     z-index: 10;
 }
 
@@ -235,7 +264,7 @@
 
 .alerts-container.visible .alerts-stat-card {
     opacity: 0;
-    animation: alertCardPopUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: alertCardPopUp 0.25s ease-out forwards;
 }
 
 .alerts-container.visible .alerts-stat-card:nth-child(1) {
@@ -252,7 +281,7 @@
 
 .alerts-container.visible .alerts-card {
     opacity: 0;
-    animation: alertCardPopUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: alertCardPopUp 0.25s ease-out forwards;
 }
 
 .alerts-container.visible .alerts-card:nth-child(1) {
@@ -277,4 +306,52 @@
 
 .alerts-container.visible .alerts-card:nth-child(6) {
     animation-delay: 0.65s;
+}
+
+/* Font-size hover animations */
+.alerts-stat-val,
+.alerts-stat-label,
+.alerts-city-tag,
+.alerts-item-title,
+.alerts-item-desc {
+    transition: font-size 0.15s ease-out;
+}
+
+.alerts-stat-card:hover .alerts-stat-val {
+    font-size: 2.125rem;
+}
+
+.alerts-stat-card:hover .alerts-stat-label {
+    font-size: 0.875rem;
+}
+
+.alerts-card:hover .alerts-city-tag {
+    font-size: 1rem;
+}
+
+.alerts-card:hover .alerts-item-title {
+    font-size: 1rem;
+}
+
+.alerts-card:hover .alerts-item-desc {
+    font-size: 0.875rem;
+}
+
+/* Glassmorphism Hover Glow Effect */
+.alerts-header {
+    transition: all 0.4s ease;
+}
+
+.alerts-header:hover {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), 0 20px 50px -5px rgba(16, 185, 129, 0.3);
+    transform: translateY(-2px);
+}
+
+.alerts-header::before {
+    transition: all 0.4s ease;
+}
+
+.alerts-header:hover::before {
+    background-color: rgba(16, 185, 129, 0.4);
+    transform: scale(1.8);
 }
